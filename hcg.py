@@ -27,11 +27,13 @@ maxRandom=5 #default max
 resourcesFolder="resources/"
 txtfile="hydraCode.txt"
 hydraURL="https://hydra.ojack.xyz/?code="
-#hydraURL = hydraURL.encode("utf-8")
 web=False
 
 def printBanner():
-    os.system("clear")
+    if(os.name=='nt'):
+        os.system("cls")
+    else:
+        os.system("clear")
     print(YELLOW + """  _   _           _              ____          _         ____                           _             
  | | | |_   _  __| |_ __ __ _   / ___|___   __| | ___   / ___| ___ _ __   ___ _ __ __ _| |_ ___  _ __ 
  | |_| | | | |/ _` | '__/ _` | | |   / _ \ / _` |/ _ \ | |  _ / _ \ '_ \ / _ \ '__/ _` | __/ _ \| '__|
@@ -86,9 +88,10 @@ def generateCode(hydra, functionsAmount):
             print(" (Default)")
         else:
             print()
-    terminalSize = os.popen('stty size', 'r').read().split()
+    #terminalSize = os.popen('stty size', 'r').read().split()
+    terminalSize = os.get_terminal_size().columns
     bar=""
-    for z in range(int(terminalSize[1])):
+    for z in range(int(terminalSize)):
         bar+="-"
     print(CYAN + bar + WHITE)
     with open(txtfile, 'w+') as txt:
