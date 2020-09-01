@@ -21,7 +21,7 @@
 	./hcg.py -f 7
 	./hcg.py --min 5 --max 12
 	./hcg.py -f 5 --web
-	./asciimaker.sh --info
+	./hcg.py --info
 
 </br>
 
