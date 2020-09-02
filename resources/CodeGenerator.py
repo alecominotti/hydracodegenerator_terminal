@@ -18,7 +18,7 @@ class CodeGenerator:
     minValue = 0  # lower bound value to set as function argument
     maxValue = 5  # upper bound value to set as function argument
     modulateItselfProb = 20 # Probabilities of modulating with itself (ex.: modulate(o0,1))
-    arrowFunctionProb = 5 # Probabilities of generating an arrow function that changes over time (ex.: () => Math.sin(time * 0.3))
+    arrowFunctionProb = 10 # Probabilities of generating an arrow function that changes over time (ex.: () => Math.sin(time * 0.3))
     mouseFunctionProb = 10 # Probabilities of generating an arrow function that uses mouse position (ex.: () => mouse.x)
 
     mathFunctions = ["sin", "cos", "tan"]
@@ -191,7 +191,7 @@ class CodeGenerator:
         return("shape("+self.genValue()+", "+self.genCeroPointFiveValue()+", "+self.genValue()+")")
 
     def solid(self):
-        return("solid("+self.genCeroOneValue()+", "+self.genCeroOneValue()+", "+self.genCeroOneValue()+", "+self.genCeroOneValue()+")")
+        return("solid("+self.genCeroOneValue()+", "+self.genCeroOneValue()+", "+self.genCeroOneValue()+", "+self.genCeroPointOneToMax()+")")
 
     def voronoi(self):
         return("voronoi("+self.genValue()+", "+self.genValue()+", "+self.genCeroOneValue()+")")
