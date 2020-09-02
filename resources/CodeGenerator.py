@@ -45,18 +45,18 @@ class CodeGenerator:
             if(self.checkSources(exclusiveSourceList)):
                 self.exclusiveSourceList = exclusiveSourceList
             else:
-                self.printError("One or more of the exclusive sources specified don't exist")
+                self.printError("One or more of the specified exclusive sources don't exist")
                 exit(1)
         if not (exclusiveFunctionList is None) and (len(exclusiveFunctionList)>0):
             if(self.checkFunctions(exclusiveFunctionList)):
                 self.exclusiveFunctionList = exclusiveFunctionList
             else:
-                self.printError("One or more of the exclusive functions specified don't exist")
+                self.printError("One or more of the specified exclusive functions don't exist")
                 exit(1)
         if(len(ignoredList)>0 and (len(exclusiveSourceList)>0 or len(exclusiveFunctionList)>0)):
             exclusiveSourceAndFunction= self.exclusiveSourceList+self.exclusiveFunctionList
             if( len([i for i in exclusiveSourceAndFunction if i in self.ignoredList]) > 0):
-                self.printError("You can't ignore specified exclusive sources or functions")
+                self.printError("You can't ignore sources or functions specified as exclusive")
                 exit(1)
             
 
@@ -136,7 +136,7 @@ class CodeGenerator:
             fullSource = operator.methodcaller(random.choice((self.sourcesList)))(self)
             source=fullSource.split("(")[0]
         if(time.time() >= (start + 15)):
-            self.printError("Could't generate a Source (You ignored all of them or specified an exclusive non existent source")
+            self.printError("Could't generate a Source (You ignored all of them")
             exit(1)
         else:
             return fullSource
@@ -149,7 +149,7 @@ class CodeGenerator:
             fullFunction = operator.methodcaller(random.choice((self.functionsList)))(self)
             function = fullFunction[1:].split("(")[0]
         if(time.time() >= (start + 15)):
-            print(RED + "\nERROR:" + WHITE + " Could't generate a Function (You ignored all of them or specified an exclusive non existent function)")
+            print(RED + "\nERROR:" + WHITE + " Could't generate a Function (You ignored all of them)")
             exit(1)
         else:
             return fullFunction
