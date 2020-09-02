@@ -11,7 +11,19 @@ import base64
 import re
 import webbrowser
 
-# Vars -----
+# User Variables -----
+minRandomFunctions = 0 #lower bound value for functions amount
+maxRandomFunctions = 5 #upper bound value for functions amount
+minRandomArgument = 0  #lower bound value for the source and function arguments
+maxRandomArgument = 5  #upper bound value for he source and function arguments
+# Put in this list whatever source or function you don't want to be generated:
+ignoredList = ["posterize", "thresh", "layer", "modulateScrollX", "modulateScrollY"]
+exclusiveSourceList = []
+exclusiveFunctionList = []
+# End User Variables -----
+
+
+# Script Variables, DO NOT MODIFY -----
 PURPLE = '\033[95m'
 CYAN = '\033[96m'     
 DARKCYAN = '\033[36m'
@@ -22,12 +34,12 @@ RED = '\033[91m'
 BOLD = '\033[1m'
 ITALIC = '\033[3m'
 WHITE = '\033[0m'   
-minRandom=0 #default min
-maxRandom=5 #default max
 resourcesFolder="resources/"
 txtfile="hydraCode.txt"
 hydraURL="https://hydra.ojack.xyz/?code="
 web=False
+# End Script Variables -----
+
 
 def printBanner():
     if(os.name=='nt'):
@@ -47,34 +59,49 @@ def showInfo():
     helptxt=open(resourcesFolder + "help.txt", 'r').read()
     print(helptxt)
 
-#Argument parsing -----
+
+#Argument handling -----
 parser = argparse.ArgumentParser()
 parser.add_argument("-f", "--function", type=int, metavar='<Integer>', help="Constantamount of functions (Always the same)")
 parser.add_argument("--min", type=int, metavar='<Integer>', help="Minimum amount of functions")
 parser.add_argument("--max", type=int, metavar='<Integer>', help="Maximum amount of functions")
 parser.add_argument("--web", action='store_true', help="Open hydra in web browser with generated code")
-parser.add_argument("-i", "--info", action='store_true', help="Shows information")
+parser.add_argument("--info", action='store_true', help="Shows information")
+parser.add_argument("-i", "--ignore", type=str, help="Specify which sources or functions to ignore." )
+parser.add_argument("--not-ignore", action='store_true', help="Doesn't ignore any source or function.")
+parser.add_argument("--xs", type=str, help="Specify exclusive sources to use.")
+parser.add_argument("--xf", type=str, help="Specify exclusive functions to use.")
 args = parser.parse_args()
 
 if args.info:
     showInfo()
     exit(0)
 if args.function:
-    minRandom=args.function
-    maxRandom=args.function
+    minRandomFunctions=args.function
+    maxRandomFunctions=args.function
 else:
     if args.min:
-        minRandom=args.min
-        if(minRandom>maxRandom):
-            maxRandom=minRandom
+        minRandomFunctions=args.min
+        if(minRandomFunctions>maxRandomFunctions):
+            maxRandomFunctions=minRandomFunctions
     if args.max:
-        maxRandom=args.max
+        maxRandomFunctions=args.max
     if args.min and args.max and (args.min>args.max):
         print(RED+"ERROR: " + WHITE + "Max value must be bigger than Min value")
         exit(1)
+if args.not_ignore:
+    ignoredList = []
+elif args.ignore:
+    ignoredList = args.ignore.split(",")
+if args.xs:
+    exclusiveSourceList = args.xs.split(",")
+if args.xf:
+    exclusiveFunctionList = args.xf.split(",")
 if args.web:
     web=True
-   
+#End argument handling -----
+
+    
 
 
 def generateCode(hydra, functionsAmount):
@@ -83,12 +110,22 @@ def generateCode(hydra, functionsAmount):
     if args.function:
         print(WHITE+"Functions amount: " + str(functionsAmount) + " (Constant)")
     else:
-        print(WHITE+"Functions amount: Random between " + str(minRandom) + "-" + str(maxRandom), end="")
+        print(WHITE+"Functions amount: Random between " + str(minRandomFunctions) + "-" + str(maxRandomFunctions), end="")
         if (not args.function) and (not args.min) and (not args.max):
             print(" (Default)")
         else:
             print()
-    #terminalSize = os.popen('stty size', 'r').read().split()
+    
+    print(WHITE+"Ignoring: ", end="")
+    if args.not_ignore:
+        print(DARKCYAN + "(None)" + WHITE)
+    else:
+        print(BLUE + str(ignoredList) + WHITE, end="")
+        if args.ignore:
+            print()
+        
+    if not args.ignore and (not args.not_ignore):
+        print(DARKCYAN + " (Default)" + WHITE)
     terminalSize = os.get_terminal_size().columns
     bar=""
     for z in range(int(terminalSize)):
@@ -116,8 +153,8 @@ def generateCode(hydra, functionsAmount):
 
 
 def main():
-    hydra=CodeGenerator.CodeGenerator()
-    functionsAmount= random.randint(minRandom,maxRandom)
+    hydra=CodeGenerator.CodeGenerator(minRandomArgument, maxRandomArgument, ignoredList, exclusiveSourceList, exclusiveFunctionList)
+    functionsAmount= random.randint(minRandomFunctions,maxRandomFunctions)
     printBanner()
     hydraCodeURL = generateCode(hydra, functionsAmount)
     print(WHITE+"Select code and press " + GREEN + "Ctrl+Shift+C " + WHITE + "to copy it")
