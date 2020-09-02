@@ -160,8 +160,10 @@ def generateCode(hydra, functionsAmount):
         fullCode += ".out(o0)"
         print(".out(o0)")
     print(CYAN + bar + WHITE)    
-    fullCode = base64.b64encode(fullCode.encode("UTF-8")).decode("ascii")
-    finalURL = hydraURL + fullCode 
+
+    fullCode = base64.b64encode(fullCode.encode("UTF-8"))
+    fullCode= str(fullCode)[2:-1]
+    finalURL = hydraURL + str(fullCode)
     return(str(finalURL))
 
 
