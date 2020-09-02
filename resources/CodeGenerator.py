@@ -18,8 +18,8 @@ class CodeGenerator:
     minValue = 0  # lower bound value to set as function argument
     maxValue = 5  # upper bound value to set as function argument
     modulateItselfProb = 20 # Probabilities of modulating with itself (ex.: modulate(o0,1))
-    timeFunctionProb = 5 # Probabilities of generating a function that changes over time (ex.: () => Math.sin(time * 0.3))
-    mouseFunctionProb = 10 # Probabilities of generating a mouse function that changes over time (ex.: () => mouse.x)
+    arrowFunctionProb = 5 # Probabilities of generating an arrow function that changes over time (ex.: () => Math.sin(time * 0.3))
+    mouseFunctionProb = 10 # Probabilities of generating an arrow function that uses mouse position (ex.: () => mouse.x)
 
     mathFunctions = ["sin", "cos", "tan"]
     mouseList = ["mouse.x", "mouse.y"]
@@ -94,25 +94,27 @@ class CodeGenerator:
 
     # VALUE GENERATION METHODS ---
 
-    def genValue(self):  # generates a number, mouse, or math functions
-        # probabilities of generating a function of time
-        if(random.randint(1, 100) <= self.timeFunctionProb):
-            # probabilities of generating a mouse function
-            if(random.randint(1, 100) <= self.mouseFunctionProb):
-                return("""() => """ + self.mouseList[random.randint(0, len(self.mouseList)-1)])
-            else:
-                randomTimeMultiplier = self.truncate(random.uniform(0.1, 1), 1)
-                return("""() => Math."""+self.mathFunctions[random.randint(0, len(self.mathFunctions)-1)]+"(time * "+str(randomTimeMultiplier)+")")
+    def genNormalValue(self):
         randomTruncate = random.randint(0, 3)
-        val = self.truncate(random.uniform(
-            self.minValue, self.maxValue), randomTruncate)
+        val = self.truncate(random.uniform(self.minValue, self.maxValue), randomTruncate)
         return(str(val))
 
-    def genPosOrNegValue(self):
+    def genValue(self):  # generates a number, mouse, or math functions
+        # probabilities of generating a function of time
+        if(random.randint(1, 100) <= self.arrowFunctionProb):
+            randomTimeMultiplier = self.truncate(random.uniform(0.1, 1), 1)
+            return("""() => Math."""+self.mathFunctions[random.randint(0, len(self.mathFunctions)-1)]+"(time * "+str(randomTimeMultiplier)+")")
+        # probabilities of generating a mouse function
+        if(random.randint(1, 100) <= self.mouseFunctionProb):
+            return("""() => """ + self.mouseList[random.randint(0, len(self.mouseList)-1)])
+
+        return self.genNormalValue()
+
+    def genPosOrNegValue(self): # generates a normal number with 1/5 posibilities of being negative
         if(random.randint(1, 5) == 5):
-            return("-" + self.genValue())
+            return("-" + self.genNormalValue())
         else:
-            return(self.genValue())
+            return(self.genNormalValue())
 
     def genCeroOneValue(self):  # generates a number between 0 and 1
         return str(self.truncate(random.uniform(0, 1), 1))

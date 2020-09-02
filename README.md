@@ -22,7 +22,6 @@
 	[-i | --info] = Shows this information.</pre>
 	
 	- You need to have Python 3 installed.
-	- HGC sometimes fails to correctly generate the encoded version of the code (Used to create the URL). If this happens, you can still copy the code and paste it in Hydra manually.
 </br>
 
 ### How to install and run the script:
