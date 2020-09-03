@@ -85,15 +85,15 @@ args = parser.parse_args()
 if args.info:
     showInfo()
     exit(0)
-if args.function:
+if args.function or args.function==0:
     minRandomFunctions=args.function
     maxRandomFunctions=args.function
 else:
-    if args.fmin:
+    if args.fmin or args.fmin==0:
         minRandomFunctions=args.fmin
         if(minRandomFunctions>maxRandomFunctions):
             maxRandomFunctions=minRandomFunctions
-    if args.fmax:
+    if args.fmax or args.fmax==0:
         maxRandomFunctions=args.fmax
     if args.fmin and args.fmax and (args.fmin>args.fmax):
         print(RED+"ERROR: " + WHITE + "Function max value must be bigger than min value")
@@ -108,11 +108,11 @@ if args.amin:
     minRandomArgument = args.amin
 if args.amax:
     maxRandomArgument = args.amax
-if args.arrow_prob:
+if args.arrow_prob or args.arrow_prob==0:
     mathArrowFunctionProb = args.arrow_prob
-if args.mouse_prob:
+if args.mouse_prob or args.mouse_prob==0:
     mouseArrowFunctionProb = args.mouse_prob
-if args.modulate_itself_prob:
+if args.modulate_itself_prob or args.modulate_itself_prob==0:
     modulateItselfProb = args.modulate_itself_prob
 if args.use_all:
     ignoredList = []
@@ -186,7 +186,7 @@ def generateCode(hydra, functionsAmount): #This method will be refactored
             txt.write("// All generated codes are stored here. You can delete this file if you want.\n")
             txt.write(staticBar + "\n\n")
     with open(txtfile, 'a') as txt:
-        txt.write("//" + time.strftime('%l:%M%p - %d %b. %Y' + "\n\n"))
+        txt.write("//" + time.strftime('%H:%M:%S%p - %d %b. %Y' + "\n\n"))
         fullCode+="""{info}\n""".format(info=info)
         source = hydra.genSource()
         txt.write(source + "\n")
