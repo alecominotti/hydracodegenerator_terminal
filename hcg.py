@@ -71,15 +71,15 @@ parser.add_argument("-fmin", type=int, metavar='<Integer>', help="Minimum amount
 parser.add_argument("-fmax", type=int, metavar='<Integer>', help="Maximum amount of functions")
 parser.add_argument("-amin", type=float, metavar='<Float>', help="Minimum value for arguments")
 parser.add_argument("-amax", type=float, metavar='<Float>', help="Maximum value for arguments")
-parser.add_argument("-web", action='store_true', help="Open hydra in web browser with generated code")
+parser.add_argument("-web", action='store_true', help="Open hydra in web browser with the generated code")
 parser.add_argument("-info", "--info", action='store_true', help="Shows information")
-parser.add_argument("-i", "--ignore", type=str, help="Specify which sources or functions to ignore.")
+parser.add_argument("-i", "--ignore", type=str, metavar='<source1,source2,func1,func2,...sourceN,funcN>', help="Specify which sources or functions to ignore. (ex.: osc,brightness)")
 parser.add_argument("--use-all", action='store_true', help="Doesn't ignore any source or function.")
-parser.add_argument("-xs", type=str, help="Specify exclusive sources to use.")
-parser.add_argument("-xf", type=str, help="Specify exclusive functions to use.")
-parser.add_argument("-ap", "--arrow-prob", type=int, help="Probability of generating an arrow function as an argument.")
-parser.add_argument("-mp", "--mouse-prob", type=int, help="Probability of generating a mouse arrow function as an argument.")
-parser.add_argument("-mip", "--modulate-itself-prob", type=int, help='Probability of generating an modulation function with "o0" as an argument.')
+parser.add_argument("-xs", type=str, metavar='<source1,source2,...sourceN>', help="Specify exclusive sources to use. (ex.: osc,voronoi)")
+parser.add_argument("-xf", type=str, metavar='<func1,func2,...funcN>', help="Specify exclusive functions to use. (ex.: colorama,modulate)")
+parser.add_argument("-ap", "--arrow-prob", type=int, metavar='<Integer>', help="Probability of generating an arrow function as an argument.")
+parser.add_argument("-mp", "--mouse-prob", type=int, metavar='<Integer>', help="Probability of generating a mouse arrow function as an argument.")
+parser.add_argument("-mip", "--modulate-itself-prob", metavar='<Integer>', type=int, help='Probability of generating an modulation function with "o0" as an argument.')
 args = parser.parse_args()
 
 if args.info:
@@ -142,17 +142,17 @@ def generateCode(hydra, functionsAmount): #This method will be refactored
     else:
         print()
     print(WHITE+"Arrow functions probability: " + str(mathArrowFunctionProb) +"%", end="")
-    if not args.arrow_prob:
+    if not args.arrow_prob and args.arrow_prob!=0:
         print(DARKCYAN + " (Default)" + WHITE)
     else:
         print()
     print(WHITE+"Mouse arrow functions probability: " + str(mouseArrowFunctionProb) +"%", end="")
-    if not args.mouse_prob:
+    if not args.mouse_prob and args.mouse_prob:
         print(DARKCYAN + " (Default)" + WHITE)
     else:
         print()
     print(WHITE+"Modulate itself probability: " + str(modulateItselfProb) +"%", end="")
-    if not args.modulate_itself_prob:
+    if not args.modulate_itself_prob and args.modulate_itself_prob!=0:
         print(DARKCYAN + " (Default)" + WHITE)
     else:
         print()
