@@ -17,9 +17,9 @@ class CodeGenerator:
 
     minValue = 0  # lower bound value to set as function argument
     maxValue = 5  # upper bound value to set as function argument
-    modulateItselfProb = 20 # Probabilities of modulating with itself (ex.: modulate(o0,1))
-    arrowFunctionProb = 10 # Probabilities of generating an arrow function that changes over time (ex.: () => Math.sin(time * 0.3))
+    arrowFunctionProb = 10 # Probabilities of generating an arrow function that changes value over time (ex.: () => Math.sin(time * 0.3))
     mouseFunctionProb = 10 # Probabilities of generating an arrow function that uses mouse position (ex.: () => mouse.x)
+    modulateItselfProb = 20 # Probabilities of generating a modulation function with "o0" as argument (ex.: modulate(o0,1))
 
     mathFunctions = ["sin", "cos", "tan"]
     mouseList = ["mouse.x", "mouse.y"]
@@ -34,13 +34,34 @@ class CodeGenerator:
     exclusiveFunctionList = []
 
 
-    def __init__(self, min=None, max=None, ignoredList=None, exclusiveSourceList=None, exclusiveFunctionList=None):
+    def __init__(self, min=None, max=None, arrowFunctionProb=None, mouseFunctionProb=None, modulateItselfProb=None, ignoredList=None, exclusiveSourceList=None, exclusiveFunctionList=None):
         if not (min is None):
             self.minValue = min
         if not (max is None):
             self.maxValue = max
+        if not (min is None) and not (max is None) and (min>max):
+            self.printError("Argument max value must be bigger than min value.")
+            exit(1)
         if not (ignoredList is None) and (len(ignoredList)>0):
             self.ignoredList = ignoredList
+        if not (arrowFunctionProb is None):
+            if(0 <= arrowFunctionProb <= 100):
+                self.arrowFunctionProb = arrowFunctionProb
+            else:
+                self.printError("Arrow function probability must be a number between 0 and 100.")
+                exit(1)
+        if not (mouseFunctionProb is None):
+            if(0 <= mouseFunctionProb <= 100):
+                self.mouseFunctionProb = mouseFunctionProb
+            else:
+                self.printError("Mouse arrow function probability must be a number between 0 and 100.")
+                exit(1)        
+        if not (modulateItselfProb is None):
+            if(0 <= modulateItselfProb <= 100):
+                self.modulateItselfProb = modulateItselfProb
+            else:
+                self.printError("Modulate itself probability must be a number between 0 and 100.")
+                exit(1)
         if not (exclusiveSourceList is None) and (len(exclusiveSourceList)>0):
             if(self.checkSources(exclusiveSourceList)):
                 self.exclusiveSourceList = exclusiveSourceList
@@ -58,7 +79,6 @@ class CodeGenerator:
             if( len([i for i in exclusiveSourceAndFunction if i in self.ignoredList]) > 0):
                 self.printError("You can't ignore sources or functions specified as exclusive")
                 exit(1)
-            
 
 
     def truncate(self, number, digits) -> float:
@@ -98,32 +118,55 @@ class CodeGenerator:
         randomTruncate = random.randint(0, 3)
         val = self.truncate(random.uniform(self.minValue, self.maxValue), randomTruncate)
         return(str(val))
-
-    def genValue(self):  # generates a number, mouse, or math functions
-        # probabilities of generating a function of time
+    
+    def genArrowFunctionValue(self):
+        randomTimeMultiplier = self.truncate(random.uniform(0.1, 1), random.randint(1,2))
+        # probabilities of generating an arrow function
         if(random.randint(1, 100) <= self.arrowFunctionProb):
-            randomTimeMultiplier = self.truncate(random.uniform(0.1, 1), 1)
             return("""() => Math."""+self.mathFunctions[random.randint(0, len(self.mathFunctions)-1)]+"(time * "+str(randomTimeMultiplier)+")")
         # probabilities of generating a mouse function
         if(random.randint(1, 100) <= self.mouseFunctionProb):
-            return("""() => """ + self.mouseList[random.randint(0, len(self.mouseList)-1)])
+            return("""() => """ + self.mouseList[random.randint(0, len(self.mouseList)-1)] + " * " + str(randomTimeMultiplier))
+        return("")
 
-        return self.genNormalValue()
+
+    def genValue(self):  # generates a number, mouse, or math functions
+        arrow=self.genArrowFunctionValue()
+        if(arrow!=""):
+            return arrow
+        else:
+            return self.genNormalValue()
 
     def genPosOrNegValue(self): # generates a normal number with 1/5 posibilities of being negative
-        if(random.randint(1, 5) == 5):
+        arrow=self.genArrowFunctionValue()
+        if(arrow!=""):
+            return arrow
+        elif(random.randint(1, 5) == 5):
             return("-" + self.genNormalValue())
         else:
             return(self.genNormalValue())
 
     def genCeroOneValue(self):  # generates a number between 0 and 1
-        return str(self.truncate(random.uniform(0, 1), 1))
+        arrow=self.genArrowFunctionValue()
+        if(arrow!=""):
+            return arrow
+        else:
+            return str(self.truncate(random.uniform(0, 1), 1))
+        
 
     def genCeroPointFiveValue(self):  # generates a number between 0 and 0.5
-        return str(self.truncate(random.uniform(0, 0.5), 2))
+        arrow=self.genArrowFunctionValue()
+        if(arrow!=""):
+            return arrow
+        else:
+            return str(self.truncate(random.uniform(0, 0.5), 2))
     
     def genCeroPointOneToMax(self):  # generates a number between 0.1 and maxValue
-        return str(self.truncate(random.uniform(0.1, self.maxValue), 2))
+        arrow=self.genArrowFunctionValue()
+        if(arrow!=""):
+            return arrow
+        else:
+            return str(self.truncate(random.uniform(0.1, self.maxValue), 2))
 
     # END VALUE GENERATION METHODS ---
 
