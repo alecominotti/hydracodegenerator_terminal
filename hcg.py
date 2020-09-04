@@ -163,7 +163,7 @@ def setWebDriver():
      
 
 def livePrinting(fullCode, textarea, action, area):
-    waitTime=0.5
+    waitTime=0.01
     loadingText="Loading new code in Hydra "
     loadingBackSpace="                              "
     loadingArray=["⠼", "⠩", "⠡", "⠌", "⠴", "⠲", "⠢", "⠦", "⠍"]
@@ -176,20 +176,15 @@ def livePrinting(fullCode, textarea, action, area):
         try:
             print(loadingText+loadingArray[random.randint(0,len(loadingArray)-1)], end="\r")
             area.click(); #Click on browser screen
-            time.sleep(waitTime) 
-            #print("Seleccion")
-            #for x in range(previusHydraCodeLength+1):
-            #    textarea.send_keys(Keys.BACK_SPACE);
+            #time.sleep(waitTime) 
             print(loadingBackSpace, end="\r")
             print(loadingText+loadingArray[random.randint(0,len(loadingArray)-1)], end="\r")
             textarea.send_keys(controlKey + "a"); #Ctrl+a to select all code
-            time.sleep(waitTime) 
-            #print("Escritura")
+            #time.sleep(waitTime) 
             print(loadingBackSpace, end="\r")
             print(loadingText+loadingArray[random.randint(0,len(loadingArray)-1)], end="\r")
             textarea.send_keys(fullCode) #writes new code overwriting old one
-            time.sleep(waitTime) 
-            #print("Ejecucion")
+            #time.sleep(waitTime) 
             print(loadingBackSpace, end="\r")
             print(loadingText+loadingArray[random.randint(0,len(loadingArray)-1)], end="\r")
             action.key_down(controlKey) #ctrl + shift + enter to execute new code
@@ -322,7 +317,6 @@ def main():
             driver.get(hydraFinalURL)
             textarea = driver.find_element_by_css_selector('.CodeMirror textarea')
             area = driver.find_element_by_id("editor-container")
-            #time.sleep(4)    
             action = ActionChains(driver)
         if args.live and not firstTime:
             try:
