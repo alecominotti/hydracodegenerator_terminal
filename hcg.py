@@ -10,7 +10,39 @@ import argparse
 import base64
 import re
 import webbrowser
+import warnings
+import selenium
+from selenium.webdriver import ActionChains
+from selenium import webdriver
+from selenium.webdriver.common.keys import Keys
+from selenium.webdriver.chrome.options import Options
 
+#cap = DesiredCapabilities.FIREFOX.copy()
+#cap["marionette"] = False
+
+#time.sleep(5)
+#codeMirror = driver.find_element("CodeMirror")
+#action_chains.click(codeMirror).perform()
+#action_chains.send_keys("Hello World").perform()
+#area = driver.find_element_by_id('editor-container')
+#area = driver.find_element_by_css_selector('.CodeMirror')
+
+
+#while not area.is_displayed():    
+    #print("esperando")
+    #time.sleep(1)
+#
+#while area.is_displayed():    
+    #print("visible")
+    #textarea.send_keys('Anduvo')
+    #time.sleep(1)
+
+
+#assert "Python" in driver.title
+#elem = driver.find_element_by_name("q")
+#elem.clear()
+#elem.send_keys("pycon")
+#exit()
 # User Variables -----
 minRandomFunctions = 0 #lower bound value for functions amount
 maxRandomFunctions = 5 #upper bound value for functions amount
@@ -121,8 +153,57 @@ if args.use_all:
 if args.web:
     web=True
 #End argument handling -----
-    
 
+
+def livePrintingBrowserSetUp(encodedCode):
+    #options = webdriver.ChromeOptions()
+    #options.add_argument("permissions.default.microphone")
+    #options.add_argument("permissions.default.camera")
+    driver = webdriver.Chrome()
+    print("cargando navegador...")
+    driver.get('https://hydra.ojack.xyz/?code=' + encodedCode)
+    textarea = driver.find_element_by_css_selector('.CodeMirror textarea')
+    area = driver.find_element_by_id("editor-container")
+    time.sleep(4)    
+    action = ActionChains(driver)    
+
+def livePrinting(fullCode, previusHydraCodeLength, textarea, action, area):
+    pepe=0
+    while pepe!=1:
+        try:
+            print("click")
+            area.click();
+            time.sleep(1) 
+            print("seleccion")
+            #for x in range(previusHydraCodeLength+1):
+            #    textarea.send_keys(Keys.BACK_SPACE);
+            textarea.send_keys(Keys.CONTROL + "a");
+            time.sleep(1) 
+            print("escritura")
+            textarea.send_keys(fullCode)
+            time.sleep(1) 
+            print("ejecucion")
+            action.key_down(Keys.CONTROL)
+            action.key_down(Keys.SHIFT)
+            action.key_down(Keys.ENTER)
+            action.perform()
+            action.key_up(Keys.ENTER)
+            action.key_up(Keys.SHIFT)
+            action.key_up(Keys.CONTROL)                   
+            action.perform()
+            pepe=1
+        except selenium.common.exceptions.ElementNotInteractableException:
+            print("Please click on Hydra to write new code (in the web browser)")
+            time.sleep(1)
+
+def encodeText(fullCode):
+    #fullCode= fullCode.replace(" ", '%0D')
+    #fullCode= fullCode.replace("=", '%3D')
+    #fullCode= fullCode.replace("\n", '%0A')
+    fullCode= fullCode.replace(">", '%3E') #solves encoding interpretation problems
+    fullCode = base64.b64encode(fullCode.encode())
+    fullCode= str(fullCode)[2:-1]
+    return fullCode
 
 def generateCode(hydra, functionsAmount): #This method will be refactored
     fullCode="" # hydra code to generate URL
@@ -202,36 +283,54 @@ def generateCode(hydra, functionsAmount): #This method will be refactored
         fullCode += ".out(o0)"
         print(".out(o0)")
     print(CYAN + bar + WHITE)     
-    #fullCode= fullCode.replace(" ", '%0D')
-    #fullCode= fullCode.replace("=", '%3D')
-    #fullCode= fullCode.replace("\n", '%0A')
-    fullCode= fullCode.replace(">", '%3E') #solves encoding interpretation problems
-    fullCode = base64.b64encode(fullCode.encode())
-    fullCode= str(fullCode)[2:-1]
-    finalURL = hydraURL + str(fullCode)
-    return(str(finalURL))
 
+    return(fullCode)
+
+live=True
 
 def main():
     hydra=CodeGenerator.CodeGenerator(minRandomArgument, maxRandomArgument, mathArrowFunctionProb, mouseArrowFunctionProb, modulateItselfProb, ignoredList, exclusiveSourceList, exclusiveFunctionList)
     functionsAmount= random.randint(minRandomFunctions,maxRandomFunctions)
-    printBanner()
-    hydraCodeURL = generateCode(hydra, functionsAmount)
-    print(WHITE+"Select code and press " + GREEN + "Ctrl+Shift+C " + WHITE + "to copy it")
-    print(WHITE+"Press " + GREEN + "Enter " + WHITE + "to generate new code")
-    print(WHITE+"Code was saved in '" + GREEN + "hydraCode.txt" + WHITE + "'")
-    print(WHITE+"\nOpen the following link to run Hydra with this code:")
-    print(BLUE+hydraCodeURL)
-    print(WHITE)
-    print("Press " + GREEN + "Ctrl+C " + WHITE + "to exit")
-    if web:
-        webbrowser.open_new(hydraCodeURL)
-    input()
+    firstTime=True
+    textarea=""
+    action=""
+    area=""
+    if live:
+        warnings.simplefilter("ignore", category=DeprecationWarning)
+        caps = webdriver.DesiredCapabilities.CHROME.copy()
+        caps['acceptInsecureCerts'] = True
+        driver = webdriver.Chrome(executable_path=r"resources/chromedriver", desired_capabilities=caps)
+    while True:    
+        printBanner()
+        hydraCode = generateCode(hydra, functionsAmount)
+        encodedHydraCode = encodeText(hydraCode)
+        hydraFinalURL = hydraURL + encodedHydraCode
+        print(WHITE+"Select code and press " + GREEN + "Ctrl+Shift+C " + WHITE + "to copy it")
+        print(WHITE+"Press " + GREEN + "Enter " + WHITE + "to generate new code")
+        print(WHITE+"Code was saved in '" + GREEN + "hydraCode.txt" + WHITE + "'")
+        print(WHITE+"\nOpen the following link to run Hydra with this code:")
+        print(BLUE+hydraFinalURL)
+        print(WHITE)
+        print("Press " + GREEN + "Ctrl+C " + WHITE + "to exit")
+        if live and firstTime:
+            driver.get(hydraFinalURL)
+            textarea = driver.find_element_by_css_selector('.CodeMirror textarea')
+            area = driver.find_element_by_id("editor-container")
+            time.sleep(4)    
+            action = ActionChains(driver)   
+            previusHydraCodeLength= len(hydraCode)
+        if live and not firstTime:
+            livePrinting(hydraCode, previusHydraCodeLength, textarea, action, area)
+            previusHydraCodeLength= len(hydraCode)
+        if firstTime:
+            firstTime = False
+        if web:
+            webbrowser.open_new(hydraCodeURL)
+        input()
     
    
 
 try:
-    while True:    
-        main()        
+    main()        
 except KeyboardInterrupt:
         print(YELLOW + "\nProcess stopped." + WHITE)
