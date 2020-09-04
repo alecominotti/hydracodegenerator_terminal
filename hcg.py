@@ -62,6 +62,10 @@ WHITE = '\033[0m'
 resourcesFolder="resources/"
 txtfile="hydraCode.txt"
 web=False
+if(platform.system()=="Darwin"):
+    controlKey=Keys.COMMAND
+else:
+    controlKey=Keys.CONTROL
 # End Script Variables -----
 
 
@@ -168,12 +172,18 @@ def livePrinting(fullCode, textarea, action, area):
     loadingBackSpace="                              "
     loadingArray=["⠼", "⠩", "⠡", "⠌", "⠴", "⠲", "⠢", "⠦", "⠍"]
     done=False
-    if(platform.system()=="Darwin"):
-        controlKey=Keys.COMMAND
-    else:
-        controlKey=Keys.CONTROL
     while not done:
         try:
+            print(loadingText+loadingArray[random.randint(0,len(loadingArray)-1)], end="\r")            
+            action.key_down(controlKey)
+            action.key_down(Keys.SHIFT)
+            action.key_down("h")
+            action.perform()
+            action.key_down("h")
+            action.key_up(Keys.SHIFT)
+            action.key_up(controlKey)                   
+            action.perform()
+            print(loadingBackSpace, end="\r")
             print(loadingText+loadingArray[random.randint(0,len(loadingArray)-1)], end="\r")
             area.click(); #Click on browser screen
             #time.sleep(waitTime) 
@@ -195,6 +205,18 @@ def livePrinting(fullCode, textarea, action, area):
             action.key_up(Keys.SHIFT)
             action.key_up(controlKey)                   
             action.perform()
+            print(loadingBackSpace, end="\r")
+            print(loadingText+loadingArray[random.randint(0,len(loadingArray)-1)], end="\r")
+            area.click(); #Click on browser screen
+            action.key_down(controlKey)
+            action.key_down(Keys.SHIFT)
+            action.key_down("h")
+            action.perform()
+            action.key_down("h")
+            action.key_up(Keys.SHIFT)
+            action.key_up(controlKey)                   
+            action.perform()
+
             done = True
         except selenium.common.exceptions.ElementNotInteractableException:
             print("Please click on Hydra text editor to write new code (in the web browser)")
@@ -318,6 +340,15 @@ def main():
             textarea = driver.find_element_by_css_selector('.CodeMirror textarea')
             area = driver.find_element_by_id("editor-container")
             action = ActionChains(driver)
+            area.click(); #Click on browser screen
+            action.key_down(controlKey)
+            action.key_down(Keys.SHIFT)
+            action.key_down("h")
+            action.perform()
+            action.key_down("h")
+            action.key_up(Keys.SHIFT)
+            action.key_up(controlKey)                   
+            action.perform()
         if args.live and not firstTime:
             try:
                 print(BOLD+YELLOW+"----------------------------")
