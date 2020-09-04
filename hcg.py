@@ -13,15 +13,26 @@ import base64
 import re
 import webbrowser
 import warnings
-
-import selenium
-from selenium.webdriver import ActionChains
-from selenium import webdriver
-from selenium.webdriver.common.keys import Keys
-from selenium.webdriver.chrome.options import Options
+import platform
+import importlib.util
+import sys
+name = 'selenium'
+if name in sys.modules:
+    print(f"{name!r} already in sys.modules")
+    #exit(1)
+elif (spec := importlib.util.find_spec(name)) is not None:
+    import selenium
+    from selenium.webdriver import ActionChains
+    from selenium import webdriver
+    from selenium.webdriver.common.keys import Keys
+    from selenium.webdriver.chrome.options import Options
+else:
+    os.system("python3 -m pip install -r resources/requirements.txt")
 
 
 # User Variables -----
+hideBrowserMediaPopUps = True # True uf you want to remove microphone and camera permission pop ups. False if you want to use them
+closeBrowserAtExit = True  # True: keeps browser open when script is stopped. False: otherwise
 minRandomFunctions = 0 #lower bound value for functions amount
 maxRandomFunctions = 5 #upper bound value for functions amount
 minRandomArgument = 0  #lower bound value for the source and function arguments
@@ -50,7 +61,6 @@ ITALIC = '\033[3m'
 WHITE = '\033[0m'   
 resourcesFolder="resources/"
 txtfile="hydraCode.txt"
-hydraURL="https://hydra.ojack.xyz/?code="
 web=False
 # End Script Variables -----
 
@@ -91,6 +101,7 @@ parser.add_argument("-ap", "--arrow-prob", type=int, metavar='<Integer>', help="
 parser.add_argument("-mp", "--mouse-prob", type=int, metavar='<Integer>', help="Probability of generating a mouse arrow function as an argument.")
 parser.add_argument("-mip", "--modulate-itself-prob", metavar='<Integer>', type=int, help='Probability of generating an modulation function with "o0" as an argument.')
 parser.add_argument("-live", action='store_true', help="Starts a live session where HCG writes automatically to Hydra in the web browser.")
+parser.add_argument("-l", "--localhost", type=int, metavar='<PORT>', help="Allows you to use your locally running Hydra")
 args = parser.parse_args()
 
 if args.info:
@@ -107,7 +118,7 @@ else:
     if args.fmax or args.fmax==0:
         maxRandomFunctions=args.fmax
     if args.fmin and args.fmax and (args.fmin>args.fmax):
-        print(RED+"ERROR: " + WHITE + "Function max value must be bigger than min value")
+        print(RED+"ERROR: " + WHITE + "Function max value must be bigger than min value.")
         exit(1)
 if args.ignore:
     ignoredList = args.ignore.split(",")
@@ -129,46 +140,69 @@ if args.use_all:
     ignoredList = []
     exclusiveSourceList = []
     exclusiveFunctionList = []
+if args.web and args.live:
+    print(RED+"ERROR: " + WHITE + "Can't use Web and Live Session mode at the same time.")
+    exit(1)
+if args.localhost or args.localhost==0:
+    hydraURL="https://localhost:" + str(args.localhost) + "/?code="
+else:
+    hydraURL="https://hydra.ojack.xyz/?code="
 if args.web:
     web=True
 #End argument handling -----
 
 def setWebDriver():
-    warnings.simplefilter("ignore", category=DeprecationWarning) # just because i'm using chromedriver from hcg folder
+    warnings.simplefilter("ignore", category=DeprecationWarning) # just because I'm using chromedriver from hcg folder
     opt = Options()
-    opt.add_experimental_option("detach", True) # to keep browser open when script is stopped
+    if hideBrowserMediaPopUps:
+        opt.add_argument("--use-fake-ui-for-media-stream")
+    opt.add_experimental_option("detach", closeBrowserAtExit)
     caps = webdriver.DesiredCapabilities.CHROME.copy()
     caps['acceptInsecureCerts'] = True
     return webdriver.Chrome(executable_path=r"resources/chromedriver", options=opt, desired_capabilities=caps)
      
 
-def livePrinting(fullCode, previusHydraCodeLength, textarea, action, area):
-    pepe=0
-    while pepe!=1:
+def livePrinting(fullCode, textarea, action, area):
+    waitTime=0.5
+    loadingText="Loading new code in Hydra "
+    loadingBackSpace="                              "
+    loadingArray=["⠼", "⠩", "⠡", "⠌", "⠴", "⠲", "⠢", "⠦", "⠍"]
+    done=False
+    if(platform.system()=="Darwin"):
+        controlKey=Keys.COMMAND
+    else:
+        controlKey=Keys.CONTROL
+    while not done:
         try:
-            print("click")
-            area.click();
-            time.sleep(1) 
-            print("seleccion")
+            print(loadingText+loadingArray[random.randint(0,len(loadingArray)-1)], end="\r")
+            area.click(); #Click on browser screen
+            time.sleep(waitTime) 
+            #print("Seleccion")
             #for x in range(previusHydraCodeLength+1):
             #    textarea.send_keys(Keys.BACK_SPACE);
-            textarea.send_keys(Keys.CONTROL + "a");
-            time.sleep(1) 
-            print("escritura")
-            textarea.send_keys(fullCode)
-            time.sleep(1) 
-            print("ejecucion")
-            action.key_down(Keys.CONTROL)
+            print(loadingBackSpace, end="\r")
+            print(loadingText+loadingArray[random.randint(0,len(loadingArray)-1)], end="\r")
+            textarea.send_keys(controlKey + "a"); #Ctrl+a to select all code
+            time.sleep(waitTime) 
+            #print("Escritura")
+            print(loadingBackSpace, end="\r")
+            print(loadingText+loadingArray[random.randint(0,len(loadingArray)-1)], end="\r")
+            textarea.send_keys(fullCode) #writes new code overwriting old one
+            time.sleep(waitTime) 
+            #print("Ejecucion")
+            print(loadingBackSpace, end="\r")
+            print(loadingText+loadingArray[random.randint(0,len(loadingArray)-1)], end="\r")
+            action.key_down(controlKey) #ctrl + shift + enter to execute new code
             action.key_down(Keys.SHIFT)
             action.key_down(Keys.ENTER)
             action.perform()
             action.key_up(Keys.ENTER)
             action.key_up(Keys.SHIFT)
-            action.key_up(Keys.CONTROL)                   
+            action.key_up(controlKey)                   
             action.perform()
-            pepe=1
+            done = True
         except selenium.common.exceptions.ElementNotInteractableException:
-            print("Please click on Hydra to write new code (in the web browser)")
+            print("Please click on Hydra text editor to write new code (in the web browser)")
             time.sleep(1)
 
 def encodeText(fullCode):
@@ -267,11 +301,11 @@ def main():
     hydra=CodeGenerator.CodeGenerator(minRandomArgument, maxRandomArgument, mathArrowFunctionProb, mouseArrowFunctionProb, modulateItselfProb, ignoredList, exclusiveSourceList, exclusiveFunctionList)
     functionsAmount= random.randint(minRandomFunctions,maxRandomFunctions)
     firstTime=True
-    textarea=""
-    action=""
-    area=""
     if args.live:
         driver = setWebDriver()
+        textarea=""
+        action=""
+        area=""
     while True:    
         printBanner()
         hydraCode = generateCode(hydra, functionsAmount)
@@ -283,27 +317,37 @@ def main():
         if not args.live:            
             print(WHITE+"\nOpen the following link to run Hydra with this code:")
             print(BLUE + hydraFinalURL + WHITE +  "\n")
-        print("Press " + GREEN + "Ctrl+C " + WHITE + "to exit")
+        print("Press " + GREEN + "Ctrl+C " + WHITE + "to exit\n")
         if args.live and firstTime:
             driver.get(hydraFinalURL)
             textarea = driver.find_element_by_css_selector('.CodeMirror textarea')
             area = driver.find_element_by_id("editor-container")
-            time.sleep(4)    
-            action = ActionChains(driver)   
-            previusHydraCodeLength= len(hydraCode)
+            #time.sleep(4)    
+            action = ActionChains(driver)
         if args.live and not firstTime:
             try:
-                livePrinting(hydraCode, previusHydraCodeLength, textarea, action, area)
-                previusHydraCodeLength= len(hydraCode)
+                print(BOLD+YELLOW+"----------------------------")
+                print("Loading new code in Hydra...")
+                print("----------------------------")
+                print('\033[2A', end="")
+                livePrinting(hydraCode, textarea, action, area)
+                print('\033[1A', end="")
+                print(GREEN+"                               ")
+                print(GREEN+"                               ")
+                print(GREEN+"                               ", end="\r")
+                print('\033[2A', end="")                    
             except selenium.common.exceptions.WebDriverException:
                 print(RED+"ERROR: " + WHITE + "Web browser was closed.")
                 exit(1)
+        if args.live:       
+            print(BOLD+GREEN+"-------------")
+            print("Code loaded ✓")
+            print("-------------"+WHITE)
         if firstTime:
             firstTime = False
         if web:
-            webbrowser.open_new(hydraCodeURL)
-        input()
-    
+            webbrowser.open_new(hydraFinalURL)
+        input()    
    
 
 try:
