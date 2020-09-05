@@ -208,7 +208,10 @@ def hideCodeKeys(action): # presses Ctrl + Shift + H
     action.key_down(Keys.SHIFT)
     action.key_down("h")
     action.perform()
-    action.key_down("h")
+    if runningOnWindows:
+        action.key_up("h")
+    else:
+        action.key_down("h") # weird selenium bug on linux
     action.key_up(Keys.SHIFT)
     action.key_up(controlKey)                   
     action.perform()
