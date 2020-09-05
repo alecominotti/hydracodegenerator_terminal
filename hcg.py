@@ -382,8 +382,9 @@ def main():
         print("Press " + GREEN + "Ctrl+C " + WHITE + "to exit\n")
         if args.live and firstTime:
             driver.get(hydraFinalURL)
-            textarea = driver.find_element_by_css_selector('.CodeMirror textarea')
-            area = driver.find_element_by_id("editor-container")
+            textarea = driver.find_elements(By.CSS_SELECTOR, '.CodeMirror textarea')[0]
+            #area = driver.find_elements(By.ID, 'editor-container')[0]
+            area = driver.find_elements(By.CLASS_NAME, 'CodeMirror')[0]
             action = ActionChains(driver)
             area.click(); #Click on browser screen
             if args.hide_code:
