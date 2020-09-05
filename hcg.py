@@ -30,12 +30,17 @@ elif (spec := importlib.util.find_spec(name)) is not None:
     from selenium.webdriver.chrome.options import Options
     from selenium.webdriver.common.by import By
 else:
+    print("\033[92m-----------------------------------------------")
+    print("\033[92mInstalling Hydra Code Generator dependencies...")
+    print("\033[92m-----------------------------------------------\033[0m")
     if runningOnWindows:
         os.system("py -m pip install -r resources/requirements.txt")
     else:
         os.system("python3 -m pip install -r resources/requirements.txt")
-    print("\033[92mDependencies were installed correctly!. Please restart Hydra Code Generator.\033[0m")
-    exit(1)
+    print("\033[92m----------------------------------------------------------------------------")
+    print("\033[92mDependencies were installed correctly!. Please restart Hydra Code Generator.")
+    print("\033[92m----------------------------------------------------------------------------\033[0m")
+    exit(0)
 
 
 # User Variables -----
@@ -256,7 +261,7 @@ def printLiveCodeStatus(pos):
         print("-------------"+WHITE)
 
 def livePrinting(fullCode, textarea, action, area):
-    waitTime=0.01
+    #waitTime=0.01 # not used
     loadingText="Loading new code in Hydra "
     loadingBackSpace="                              "
     if runningOnWindows:
