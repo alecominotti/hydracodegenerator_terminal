@@ -170,7 +170,15 @@ if args.web and args.live:
     printError("Can't use Web and Live Session mode at the same time.")
     exit(1)
 if args.localhost or args.localhost==0:
-    hydraURL="https://localhost:" + str(args.localhost) + "/?code="
+    IPandPort = re.findall(r'[0-9]+(?:\.[0-9]+){3}:[0-9]+', args.localhost) #ip and port
+    if IPandPort:
+        hydraURL = "https://" + str(args.localhost) + "/?code="
+    elif args.localhost.isnumeric(): # just port
+        hydraURL = "https://localhost:" + str(args.localhost) + "/?code="
+    else:
+        printError("Wrong localhost argument. Must be <IP:Port> or <Port>")
+        exit(1)
+    
 else:
     hydraURL="https://hydra.ojack.xyz/?code="
 if args.web:
