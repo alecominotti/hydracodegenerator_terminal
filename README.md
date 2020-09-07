@@ -6,13 +6,13 @@
 </br>
 
 ###### English
-- HGC is a script that randomly generates code in Hydra syntax. The sources, functions, the amount of them and the values of their arguments are all generated randomly (within a specified lower and upper bound).
+- HGC is a script that randomly generates code in Hydra syntax. The sources, functions, the amount of them and the values of their arguments can all be generated randomly (within a specified lower and upper bound).
 - From the script arguments you can specify a wide variety of parameters to customize the code, such as the lower and upper bounds for random number generation, probabilities of generating some kind of functions and more.
 - In <b>Live Session Mode</b> you can automatically run and visualize the generated code in Hydra, since it opens Hydra in a web browser and executes the generated code in real time, everytime you press Enter.
 - HCG aims to allow you to explore the infinite creation posibilities that Hydra provides, combining them with the art of randomness and the user customization, allowing visual artists to find inspiration, new ideas or just pass the time.
 
 ###### Español
-- HCG es un script que genera codigo en sintaxis de Hydra de manera aleatoria. Las sources, functions, la cantidad de ellas y los valores de sus argumentos son todos generados aleatoriamente (dentro de un rango especificado).
+- HCG es un script que genera codigo en sintaxis de Hydra de manera aleatoria. Las sources, functions, la cantidad de ellas y los valores de sus argumentos pueden ser todos generados aleatoriamente (dentro de un rango especificado).
 - Desde los argumentos del script podés especificar una gran variedad de parámetros para personalizar el código, como los límites inferiores y superiores para la generación aleatoria de números, la probabilidad de generar algunos tipos de funciones y más.
 - En el modo <b>Live Session Mode</b> podés ejecutar y visualizar el código en Hydra de manera automática, ya que abre Hydra en el navegador web y ejecuta el nuevo código generado en tiempo real, cada vez que apretás Enter.
 - HCG tiene como objetivo permitirte explorar las infinitas posibilidades de creación que provee Hydra, combinándolas con el arte de lo aleatorio y la personalización del usuario, permitiendo a les artistas visuales encontrar inspiración, nuevas ideas o simplemente pasar el rato.
@@ -34,15 +34,15 @@
 	[-ap | --arrow-prob] &lt;Integer&gt; = Probability of generating an arrow function as an argument (0 to 100). (ex.: "() => Math.sin(time)" )
 	[-mp | --mouse-prob] &lt;Integer&gt; = Probability of generating a mouse arrow function as an argument (0 to 100). (ex.: "() => mouse.x" )
 	[-mip | --modulate-itself-prob] &lt;Integer&gt; = Probability of setting "o0" as an argument for the modulate functions (0 to 100). (ex.: "modulate(o0, 1)" )
-	[-xs] &lt;String&gt; = Exclusive sources to use. (ex.: osc,voronoi).
-	[-xf] &lt;String&gt; = Exclusive functions to use. (ex.: colorama,modulate).
-	[-i | --ignore] &lt;String&gt; = Sources or functions to ignore. (ex.: osc,brightness).
+	[-xs] &lt;String&gt; = Exclusive sources to use, separated by commas (ex.: osc,voronoi).
+	[-xf] &lt;String&gt; = Exclusive functions to use, separated by commas (ex.: colorama,modulate).
+	[-i | --ignore] &lt;String&gt; = Sources or functions to ignore, separated by commas (ex.: osc,brightness).
 	[--use-all] = Doesn't ignore any source or function.
 	[-web] = Opens Hydra in the web browser with the generated code after generating it. (Google Chrome only).
 	[-live] = Starts <b>Live Session Mode</b>, where HCG opens up the web browser, writes the generated code and run it automatically in Hydra, everytime you press Enter. (Google Chrome only).
-	[-hc | --hide-code] = Hides executed code in Hydra when running in Live Session Mode.
+	[-hc | --hide-code] = Hides code in Hydra when running in Live Session Mode.
 	[-l | --localhost] &lt;IP:PORT|PORT&gt; = Allows you to use Live Session Mode in your locally running Hydra, specifying the IP:PORT or just PORT if it's running on the same computer.
-	[-i | --info] = Shows this information
+	[-i | --info] = Shows this information.
 	Experimental:
 	[-um | --use-media] = Allows camera and microphone in Live Session Mode (Blocked by default to avoid window prompts).
 	[-cb | --close-browser] = In Live Session Mode, closes browser window when the script is stopped. WINDOWS 10 ALWAYS CLOSES THE BROWSER WHEN THE SCRIPT IS STOPPED.
