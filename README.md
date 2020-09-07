@@ -1,7 +1,7 @@
 # hydracodegenerator
 ### Generate Hydra code randomly. Run it instantly.
 
-![HCG Image](https://github.com/alecominotti/hydracodegenerator/blob/master/resources/image.png?raw=true, "Pimba")  
+![HCG Image](https://github.com/alecominotti/hydracodegenerator_terminal/blob/master/resources/image.png?raw=true "Pimba")  
 
 </br>
 
