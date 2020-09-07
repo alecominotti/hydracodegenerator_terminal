@@ -265,7 +265,7 @@ def livePrinting(fullCode, textarea, action, area):
     loadingText="Loading new code in Hydra "
     loadingBackSpace="                              "
     if runningOnWindows:
-        loadingArray=["#", ".", "-", "/", "\\", "^", "+", "<", ">"] # windows friendly...
+        loadingArray=[".", "-", "/", "\\", "^", "+", "<", ">"] # windows friendly...
     else:
         loadingArray=["⠼", "⠩", "⠡", "⠌", "⠴", "⠲", "⠢", "⠦", "⠍"]
     done=False

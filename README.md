@@ -31,9 +31,9 @@
 	[-fmax] &lt;Integer&gt; = Maximum amount of functions to generate (Default: 5).
 	[-amin] &lt;Float&gt; = Minimum value for function arguments (Default: 0).
 	[-amax] &lt;Float&gt; = Maximum value for function arguments (Default: 5).
-	[-ap | --arrow-prob] &lt;Integer&gt; = Probability of generating an arrow function as an argument (0 to 100). (ex.: "() => Math.sin(time)" )
-	[-mp | --mouse-prob] &lt;Integer&gt; = Probability of generating a mouse arrow function as an argument (0 to 100). (ex.: "() => mouse.x" )
-	[-mip | --modulate-itself-prob] &lt;Integer&gt; = Probability of setting "o0" as an argument for the modulate functions (0 to 100). (ex.: "modulate(o0, 1)" )
+	[-ap | --arrow-prob] &lt;Integer&gt; = Probability of generating an arrow function as an argument (0 to 100). (Default: 10) | ex.: "() => Math.sin(time)" 
+	[-mp | --mouse-prob] &lt;Integer&gt; = Probability of generating a mouse arrow function as an argument (0 to 100). (Default: 20) | ex.: "() => mouse.x" 
+	[-mip | --modulate-itself-prob] &lt;Integer&gt; = Probability of setting "o0" as an argument for the modulate functions (0 to 100). (Default: 20) | ex.: "modulate(o0, 1)"
 	[-xs] &lt;String&gt; = Exclusive sources to use, separated by commas (ex.: osc,voronoi).
 	[-xf] &lt;String&gt; = Exclusive functions to use, separated by commas (ex.: colorama,modulate).
 	[-i | --ignore] &lt;String&gt; = Sources or functions to ignore, separated by commas (ex.: osc,brightness).
