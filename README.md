@@ -1,21 +1,28 @@
-# hydracodegenerator
-### Generate Hydra code randomly. Run it instantly.
+# hydracodegenerator [terminal]
+
+</br>
+
+## For a newer, better and updated version of HCG please visit [this repo](https://github.com/alecominotti/hydracodegenerator).
+
+</br>
+
+### Generate Hydra code randomly.
 
 ![HCG Image](https://github.com/alecominotti/hydracodegenerator_terminal/blob/master/resources/image.png?raw=true "Pimba")  
 
 </br>
 
 ###### English
-- HGC is a script that randomly generates code in Hydra syntax. The sources, functions, the amount of them and the values of their arguments can all be generated randomly (within a specified lower and upper bound).
-- From the script arguments you can specify a wide variety of parameters to customize the code, such as the lower and upper bounds for random number generation, probabilities of generating some kind of functions and more.
+- HCG is a script that randomly generates code in Hydra sintax. The sources, functions, the amount of them and the values of their arguments are all generated randomly (within customizable lower and upper bounds).
+- From the script arguments you can specify a wide variety of parameters to customize the code, such as the lower and upper bounds for random number generation, probabilities of generating some kind of arguments and more.
 - In <b>Live Session Mode</b> you can automatically run and visualize the generated code in Hydra, since it opens Hydra in a web browser and executes the generated code in real time, everytime you press Enter.
-- HCG aims to allow you to explore the infinite creation posibilities that Hydra provides, combining them with the art of randomness and the user customization, allowing visual artists to find inspiration, new ideas or just pass the time.
+- HCG aims to allow you to explore the infinite creation posibilities that Hydra provides, combining them with the art of randomness and the user customization, allowing you to find inspiration, new ideas or just pass the time.
 
 ###### Español
-- HCG es un script que genera codigo en sintaxis de Hydra de manera aleatoria. Las sources, functions, la cantidad de ellas y los valores de sus argumentos pueden ser todos generados aleatoriamente (dentro de un rango especificado).
+- HCG es un script que genera codigo en sintaxis de Hydra de manera aleatoria. Las sources, functions, la cantidad de ellas y los valores de sus argumentos son todos generados aleatoriamente (dentro de un rango personalizable).
 - Desde los argumentos del script podés especificar una gran variedad de parámetros para personalizar el código, como los límites inferiores y superiores para la generación aleatoria de números, la probabilidad de generar algunos tipos de funciones y más.
 - En el modo <b>Live Session Mode</b> podés ejecutar y visualizar el código en Hydra de manera automática, ya que abre Hydra en el navegador web y ejecuta el nuevo código generado en tiempo real, cada vez que apretás Enter.
-- HCG tiene como objetivo permitirte explorar las infinitas posibilidades de creación que provee Hydra, combinándolas con el arte de lo aleatorio y la personalización del usuario, permitiendo a les artistas visuales encontrar inspiración, nuevas ideas o simplemente pasar el rato.
+- HCG tiene como objetivo permitirte explorar las infinitas posibilidades de creación que provee Hydra, combinándolas con el arte de lo aleatorio y la personalización del usuario, permitiéndote encontrar inspiración, nuevas ideas o simplemente pasar el rato.
 
 
 </br>
@@ -102,5 +109,7 @@ You must have Python 3 installed. You can download it here: [https://www.python.
 	  [https://github.com/ojack/hydra](https://github.com/ojack/hydra "Hydra, By Olivia Jack")
   
 </br>
+
+----------------------------------------------------------------------------------------------------------------
   
 ##### Ale Cominotti - 2020
